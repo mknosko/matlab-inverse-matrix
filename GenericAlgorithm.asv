@@ -1,0 +1,27 @@
+% Generic algortihm of matrix inversion
+function [newPop, minFit, grafFit, minRet] = GenericAlgorithm(Pop, Fit, Space, grafFit, minRet, A, minFit)
+        
+    newPop1 = selbest(Pop, Fit, [2 0]);
+
+    newPop2 = seltourn(Pop, Fit, 32);
+    CrossedPop1 = crossov(newPop2, 2, 0);
+    MutedPopX1 = mutx(CrossedPop1, 0.1, Space);
+    MutedPopA1 = muta(MutedPopX1, 0.2, [5 5 5 5 5 5 5 5 5]*0.05, Space);
+
+    newPop3 = selrand(Pop, Fit, 16);
+    CrossedPop2 = crossov(newPop3, 2, 0);
+    MutedPopX2 = mutx(CrossedPop2, 0.1, Space);
+    MutedPopA2 = muta(MutedPopX2, 0.05, [5 5 5 5 5 5 5 5 5]*0.05, Space);
+
+    Pop = [newPop1; MutedPopA1; MutedPopA2];
+
+    Fit=fitness(Pop, A); % znovu vyhodnotenie fitness funkcie 
+    [minFitnew,minFit(2)]=min(Fit); % najdenie najlepsieho (minimalneho) retazca
+    if minFitnew<minFit % porovnanie min. a v pripade potreby zmena min. hodnoty
+        minFit(1)=minFitnew;
+        minRet=Pop(minFit(2),:);
+    end
+    grafFit=minFit(1); % ulozenie minimalnej hodnoty po kazdej generacii (iteracii)
+
+    
+end
